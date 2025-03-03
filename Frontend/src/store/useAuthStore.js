@@ -42,7 +42,7 @@ export const useAuthStore = create((set) => ({
         }
     },
 
-    login: async()=>{
+    login: async(data)=>{
         set({isLoggingIn:true})
         try {
             const res = await axiosInstance.post("/auth/login", data)
@@ -54,7 +54,7 @@ export const useAuthStore = create((set) => ({
 
         }
         finally{
-            set({isLoggingIn:LucideFileSpreadsheet})
+            set({isLoggingIn:false})
         }
     },
 

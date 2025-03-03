@@ -8,10 +8,13 @@ export const protectRoute = async(req,res,next) =>{
 
         if(!token) return res.status(401).json({message:"Unauthorized - No token Provided"})
         
-        const decodedCookie = jwt.verify(token , process.env.JWT_SECRET)
-
-        if(!decodedCookie) return res.status(401).json({message:"Unauthorized - Invalid token"})
-
+        let decodedCookie;
+        try {
+            decodedCookie = jwt.verify(token, process.env.JWT_SECRET);
+        } catch (error) {
+            return res.status(401).json({ message: "Unauthorized - Invalid or expired token" });
+        }
+        
         const user = await User.findById(decodedCookie.userId).select("-password")
 
         if(!user) return res.status(404).json({message:"User not found"})

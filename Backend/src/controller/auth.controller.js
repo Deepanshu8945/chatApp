@@ -93,7 +93,26 @@ export const updateProfile = async (req, res) => {
     if (!profilePic)
       return res.status(400).json({ message: "Profile pic is required" });
 
-    const uploadResponse = await cloudinary.uploader.upload(profilePic);
+    console.log("Received Base64 Image:", profilePic.substring(0, 50)); // Log first 50 chars
+
+    // Ensure it's a valid Base64 format by removing metadata
+    const base64Data = profilePic.replace(/^data:image\/\w+;base64,/, "");
+
+    // Check if it's correctly formatted
+    if (!base64Data) {
+      return res.status(400).json({ message: "Invalid Base64 format" });
+    }
+
+    console.log("Uploading to Cloudinary...");
+
+    // Upload to Cloudinary
+    const uploadResponse = await cloudinary.uploader.upload(profilePic, {
+      folder: "profile_pics",
+    });
+
+    console.log("Cloudinary Upload Success:", uploadResponse);
+
+    // Save the URL in the database
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       { profilePic: uploadResponse.secure_url },
@@ -102,7 +121,7 @@ export const updateProfile = async (req, res) => {
 
     res.status(200).json(updatedUser);
   } catch (error) {
-    console.log("Error in updaet profile pic");
+    console.log("Error in update profile pic",error);
     res.status(500).json({ message: "Internal server error" });
   }
 };

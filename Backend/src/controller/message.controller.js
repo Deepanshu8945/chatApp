@@ -1,6 +1,7 @@
 import Message from "../models/message.model.js";
 import User from "../models/user.model.js";
 import mongoose from "mongoose";
+import cloudinary from "../lib/cloudinary.js";
 
 export const getUsersForSidebar = async (req, res) => {
   try {
@@ -21,8 +22,8 @@ export const getUsersForSidebar = async (req, res) => {
 
 export const getMessages = async (req, res) => {
   try {
-    console.log("REQ.USER:", req.user._id, "Type:", typeof req.user._id);
-    console.log("REQ.PARAMS:", req.params);
+    // console.log("REQ.USER:", req.user._id, "Type:", typeof req.user._id);
+    // console.log("REQ.PARAMS:", req.params);
 
     const { id: userToChatId } = req.params;
     const myId = req.user._id;
